@@ -2,6 +2,15 @@ from datetime import datetime
 import datetime as dt
 import requests
 import json
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+import torchvision.transforms as transforms
+import torch
+import os
+import torch.nn as nn
+import torch.nn.init
+from torch.autograd import Variable
+import pandas as pd
+
 
 
 # date, time, 위경도(x,y)를 각각 입력받아 해당 날짜의 시간에 대한
@@ -64,7 +73,9 @@ def get_weather(date, x, y):
                 if (dict_items[i]["fcstValue"] == "강수없음"):
                     PCP.append(0)
                 else:
-                    PCP.append(dict_items[i]["fcstValue"])
+                    to_cut = dict_items[i]["fcstValue"]
+                    PCP.append(float(to_cut[:to_cut.index("m")]))
+    print(PCP)
     return TMP, REH, WSD, PCP
 
 
@@ -86,8 +97,78 @@ def get_position(address):
 # 주소 address를 입력받아 해당 위치에 기반한 온도, 습도, 풍속, 강수량을 반환한다.
 def get_tmp_reh_wsd_pcp(address):
     x, y = get_position(address)
-    print(x)
-    print(y)
     TMP, REH, WSD, PCP = get_weather(20240627, x, y)
 
     return TMP, REH, WSD, PCP
+
+# 모델을 불러와 학습시키는 함수
+def call_model(data):
+    ss = StandardScaler()
+    ms = MinMaxScaler()
+
+    path = os.getcwd().replace('\\', '/') + '/pybo'
+
+    y = pd.read_csv(path+"/static/data/y_data.csv")
+    ms.fit(y)
+
+    X_act = data
+    X_act_ss = ss.fit_transform(X_act)
+    X_act_tensors = torch.Tensor(X_act_ss)
+    X_act_tensors_f = torch.reshape(X_act_tensors, (X_act_tensors.shape[0], 1, X_act_tensors.shape[1]))
+
+    input_size = 4
+    hidden_size = 500
+    num_layers = 1
+
+    num_classes = 2
+    
+    model = LSTM(num_classes, input_size, hidden_size, num_layers, 365)
+    model.load_state_dict(torch.load(path+"/static/models/LSTM_MODELt_1L_500h.pth"))
+
+    model.train()
+
+    predict = model(X_act_tensors_f)
+    predict = predict.data.numpy()
+    predict = ms.inverse_transform(predict)
+
+    return predict.tolist()
+
+
+
+# LSTM 모델 클래스
+class LSTM(nn.Module):
+    def __init__(self, num_classes, input_size, hidden_size, num_layers, seq_length):
+        super(LSTM, self).__init__()
+        self.num_classes=num_classes
+        self.num_layers=num_layers
+        self.input_size=input_size
+        self.hidden_size=hidden_size
+        self.seq_length=seq_length
+        
+        self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, num_layers=num_layers, batch_first=True)
+        
+        self.fc_1 = nn.Linear(hidden_size*num_layers, 256)
+        self.fc1 = nn.Linear(256, hidden_size*num_layers)
+        
+        self.fc_3 = nn.Linear(hidden_size*num_layers, 256)
+        self.fc3 = nn.Linear(256, num_classes) 
+        
+        self.relu = nn.ReLU()
+
+
+    def forward(self, x):
+        h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))
+        c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))
+        output, (hn, cn) = self.lstm(x, (h_0, c_0))
+        hn = hn.view(x.size(0), -1)
+        out = self.relu(hn)
+        out = self.fc_1(out)
+        out = self.relu(out)
+        out = self.fc1(out)
+        
+        out = self.relu(out)
+        out = self.fc_3(out)
+        out = self.relu(out)
+        out = self.fc3(out)
+        
+        return out
