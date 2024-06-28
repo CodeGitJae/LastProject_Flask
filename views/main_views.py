@@ -6,6 +6,8 @@ from pybo.static.modules import module
 
 bp = Blueprint("main", __name__, url_prefix="/")
     
+
+# 주소를 받아 오늘, 내일, 모레의 미세먼지 데이터를 dictionary 형태로 반환하는 라우터
 @bp.route("dust_info")
 def dust_info():
 
@@ -23,5 +25,17 @@ def dust_info():
     predict = module.call_model(data)
 
     dict_return = [{"PM10":predict[0][0], "PM2.5":predict[0][1]}, {"PM10":predict[1][0], "PM2.5":predict[1][1]}, {"PM10":predict[2][0], "PM2.5":predict[2][1]}]
+
+    return dict_return
+
+
+
+
+@bp.route("get_img")
+def get_img():
+
+    keyword = request.args.get("keyword")
+    img_list = module.get_img_src(keyword)
+    dict_return = {"result":img_list}
 
     return dict_return

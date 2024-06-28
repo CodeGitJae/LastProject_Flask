@@ -10,6 +10,24 @@ import torch.nn as nn
 import torch.nn.init
 from torch.autograd import Variable
 import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+
+
+def get_img_src(word):
+    img_list = []
+    url = f'https://search.naver.com/search.naver?ssc=tab.image.all&where=image&sm=tab_jum&query={word}'
+
+    response = requests.get(url)
+    question_list_page_content = response.text
+    soup = BeautifulSoup(question_list_page_content, "html.parser")
+
+    for i in range(len(soup.select("img"))):
+        text = str(soup.select("img")[i])
+        text = text[text.index("https"):text.index(";type")]
+        img_list.append(text)
+
+    return img_list
 
 
 
@@ -172,3 +190,4 @@ class LSTM(nn.Module):
         out = self.fc3(out)
         
         return out
+    
