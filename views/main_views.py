@@ -1,5 +1,7 @@
 from flask import Flask, Blueprint, request
 import pandas as pd
+import json
+import flask
 
 
 from pybo.static.modules import module
@@ -25,9 +27,10 @@ def dust_info():
     predict = module.call_model(data)
 
     dict_return = [{"PM10":predict[0][0], "PM2.5":predict[0][1]}, {"PM10":predict[1][0], "PM2.5":predict[1][1]}, {"PM10":predict[2][0], "PM2.5":predict[2][1]}]
+    json_val = json.dumps(dict_return)
 
-    return dict_return
-
+    my_res = flask.Response(json_val)
+    return my_res
 
 
 
@@ -36,6 +39,9 @@ def get_img():
 
     keyword = request.args.get("keyword")
     img_list = module.get_img_src(keyword)
-    dict_return = {"result":img_list}
 
-    return dict_return
+    dict_return = {"result":img_list}
+    json_val = json.dumps(dict_return)
+
+    my_res = flask.Response(json_val)
+    return my_res
