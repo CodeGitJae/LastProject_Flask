@@ -219,8 +219,8 @@ def call_model(data):
     X_act_tensors_f = torch.reshape(X_act_tensors, (X_act_tensors.shape[0], 1, X_act_tensors.shape[1]))
 
     input_size = 4
-    hidden_size = 3000
-    num_layers = 2
+    hidden_size = 500
+    num_layers = 1
 
     num_classes = 2
     
