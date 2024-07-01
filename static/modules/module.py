@@ -35,7 +35,7 @@ def get_img_src(word):
 # 온도, 습도, 강수량, 풍속을 반환하는 함수
 # date 형태 예시) 20240627
 # time 형태 예시) 0500
-def get_weather(date, x, y):
+def get_weather(x, y):
 
     one_day = dt.timedelta(days=1)
     two_day = dt.timedelta(days=2)
@@ -114,7 +114,7 @@ def get_position(address):
 # 주소 address를 입력받아 해당 위치에 기반한 온도, 습도, 풍속, 강수량을 반환한다.
 def get_tmp_reh_wsd_pcp(address):
     x, y = get_position(address)
-    TMP, REH, WSD, PCP = get_weather(20240627, x, y)
+    TMP, REH, WSD, PCP = get_weather(x, y)
 
     return TMP, REH, WSD, PCP
 
