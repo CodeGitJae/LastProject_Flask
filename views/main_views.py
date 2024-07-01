@@ -15,7 +15,7 @@ def dust_info():
 
     address = request.args.get("address")
 
-    TMP, REH, WSD, PCP = module.get_tmp_reh_wsd_pcp(address)
+    TMP, REH, WSD, PCP = module.get_address_tmp_reh_wsd_pcp(address)
 
     data = pd.DataFrame({
     '평균기온':TMP,
@@ -44,7 +44,7 @@ def position_dust_info():
     x = request.args.get("x")
     y = request.args.get("y")
 
-    TMP, REH, WSD, PCP = module.get_address_tmp_reh_wsd_pcp(x, y)
+    TMP, REH, WSD, PCP = module.get_position_tmp_reh_wsd_pcp(x, y)
 
     data = pd.DataFrame({
     '평균기온':TMP,
