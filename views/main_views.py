@@ -29,8 +29,6 @@ def dust_info():
     dict_return = [{"PM10":predict[0][0], "PM2.5":predict[0][1]}, {"PM10":predict[1][0], "PM2.5":predict[1][1]}, {"PM10":predict[2][0], "PM2.5":predict[2][1]}]
     json_val = json.dumps(dict_return)
 
-    print(type(dict_return[0]["PM10"]))
-
     my_res = flask.Response(json_val)
 
     return my_res
@@ -57,9 +55,6 @@ def position_dust_info():
 
     dict_return = [{"PM10":predict[0][0], "PM2.5":predict[0][1]}, {"PM10":predict[1][0], "PM2.5":predict[1][1]}, {"PM10":predict[2][0], "PM2.5":predict[2][1]}]
     json_val = json.dumps(dict_return)
-
-    print(type(dict_return[0]["PM10"]))
-
     my_res = flask.Response(json_val)
 
     return my_res

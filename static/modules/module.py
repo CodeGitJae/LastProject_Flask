@@ -94,7 +94,6 @@ def get_position_weather(x, y):
                 else:
                     to_cut = dict_items[i]["fcstValue"]
                     PCP.append(float(to_cut[:to_cut.index("m")]))
-    print(PCP)
     return TMP, REH, WSD, PCP
 
 
@@ -163,7 +162,6 @@ def get_address_weather(address):
                 else:
                     to_cut = dict_items[i]["fcstValue"]
                     PCP.append(float(to_cut[:to_cut.index("m")]))
-    print(PCP)
     return TMP, REH, WSD, PCP
 
 
