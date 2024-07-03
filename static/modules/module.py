@@ -16,7 +16,8 @@ from bs4 import BeautifulSoup
 
 def get_img_src(word):
     img_list = []
-    url = f'https://www.google.com/search?newwindow=1&sca_esv=0835a04e1987451a&q={word}&udm=2&fbs=AEQNm0DmKhoYsBCHazhZSCWuALW8l8eUs1i3TeMYPF4tXSfZ96qP8jk59Ek0sz1u1YABeO97Kg_HO-KtF2S8ZC2gd6OMgxanGK0ucuQE0TMKSErHKaqOzsl8G5OB8IiieWbwPUc5KQktnFwz2_4XqFZWROThPyje8er78SGt2wN8I2xunuBVePhKkWo1uMFiWz5spa_2zKSyCcC2ngnCWIztVZtgplD0Sg&sa=X&ved=2ahUKEwiir7LOuYqHAxUo3TQHHdIXBuwQtKgLegQIFBAB&biw=1920&bih=953&dpr=1'
+    url = f'https://search.naver.com/search.naver?ssc=tab.image.all&where=image&sm=tab_jum&query={word}'
+    # url = f'https://www.google.com/search?newwindow=1&sca_esv=0835a04e1987451a&q={word}&udm=2&fbs=AEQNm0DmKhoYsBCHazhZSCWuALW8l8eUs1i3TeMYPF4tXSfZ96qP8jk59Ek0sz1u1YABeO97Kg_HO-KtF2S8ZC2gd6OMgxanGK0ucuQE0TMKSErHKaqOzsl8G5OB8IiieWbwPUc5KQktnFwz2_4XqFZWROThPyje8er78SGt2wN8I2xunuBVePhKkWo1uMFiWz5spa_2zKSyCcC2ngnCWIztVZtgplD0Sg&sa=X&ved=2ahUKEwiir7LOuYqHAxUo3TQHHdIXBuwQtKgLegQIFBAB&biw=1920&bih=953&dpr=1'
 
     response = requests.get(url)
     question_list_page_content = response.text
