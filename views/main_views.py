@@ -36,7 +36,6 @@ def dust_info():
     return my_res
 
 
-
 # 좌표를 받아 오늘, 내일, 모레의 미세먼지 데이터를 dictionary 형태로 반환하는 라우터
 @bp.route("position_dust_info")
 def position_dust_info():
@@ -60,7 +59,6 @@ def position_dust_info():
     my_res = flask.Response(json_val)
 
     return my_res
-
 
 
 # keyword 를 받아 해당 keyword를 네이버에 검색했을 때 나오는 이미지들의 주소들을
