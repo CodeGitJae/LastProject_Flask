@@ -221,12 +221,12 @@ def call_model(data):
 
     input_size = 4
     hidden_size = 500
-    num_layers = 1
+    num_layers = 2
 
     num_classes = 2
     
     model = LSTM(num_classes, input_size, hidden_size, num_layers, 365)
-    model.load_state_dict(torch.load(path+"/static/models/LSTM_MODELt_1L_500h.pth"))
+    model.load_state_dict(torch.load(path+"/static/models/LSTM_MODELt_2L_500h.pth"))
 
     model.train()
 
@@ -250,29 +250,27 @@ class LSTM(nn.Module):
         
         self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size, num_layers=num_layers, batch_first=True)
         
-        self.fc_1 = nn.Linear(hidden_size*num_layers, 256)
-        self.fc1 = nn.Linear(256, hidden_size*num_layers)
-        
-        self.fc_3 = nn.Linear(hidden_size*num_layers, 256)
-        self.fc3 = nn.Linear(256, num_classes) 
+        self.fc1 = nn.Linear(hidden_size*num_layers, 512)
+        self.fc1_1 = nn.Linear(512, hidden_size*num_layers)
+        self.fc2 = nn.Linear(hidden_size*num_layers, 256)
+        self.fc2_1 = nn.Linear(256, num_classes)
         
         self.relu = nn.ReLU()
-
-
+        
     def forward(self, x):
         h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))
         c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size))
         output, (hn, cn) = self.lstm(x, (h_0, c_0))
         hn = hn.view(x.size(0), -1)
         out = self.relu(hn)
-        out = self.fc_1(out)
-        out = self.relu(out)
         out = self.fc1(out)
+        out = self.relu(out)
+        out = self.fc1_1(out)
         
         out = self.relu(out)
-        out = self.fc_3(out)
+        out = self.fc2(out)
         out = self.relu(out)
-        out = self.fc3(out)
+        out = self.fc2_1(out)
         
         return out
     
